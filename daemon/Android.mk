@@ -27,7 +27,7 @@ LOCAL_C_INCLUDES += \
 	frameworks/base/include \
 	ndk/sources/cxx_stl/gnu-libstdc++/4.6/libs/armeabi-v7a/include \
 	ndk/sources/cxx_stl/gnu-libstdc++/4.6/include \
-	frameworks/base/cmds/otad/librecovery
+	librecovery
 
 LOCAL_SHARED_LIBRARIES := libcutils liblog libstlport librecovery libcurl
 
