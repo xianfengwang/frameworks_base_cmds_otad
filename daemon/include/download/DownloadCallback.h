@@ -47,8 +47,8 @@ public:
 			task->SetFileSize(totalSize);
 			task->SetProgress(0);
 			//delete files
-			LOGD("reset download task, delete /mnt/sdcard/fota/*");
-			fs_CleanDir(std::string("/mnt/sdcard/fota/"));
+			LOGD("reset download task, delete /mnt/internal_sd/fota/*");
+			fs_CleanDir(std::string("/mnt/internal_sd/fota/"));
 		}
 	}
 

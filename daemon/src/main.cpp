@@ -29,8 +29,8 @@
 #define SERVER_SOCKET_PORT 		4999
 #define UPDATE_CHECK_INTERVAL	60 //should be longer in product mode
 #define RECOVERY_PATH_PREFIX	"/cache/recovery/"
-#define FOTA_PATH_PREFIX		"/mnt/sdcard/fota/"
-#define DOWNLOAD_TASKINFO_PATH	"/mnt/sdcard/fota/task_info.txt"
+#define FOTA_PATH_PREFIX		"/mnt/internal_sd/fota/"
+#define DOWNLOAD_TASKINFO_PATH	"/mnt/internal_sd/fota/task_info.txt"
 
 #define OTA_SERVER_API 			"http://ota.infthink.com/cast/check"
 
