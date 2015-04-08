@@ -13,6 +13,8 @@
 #define KEY_MAC_ADDRESS 		"mac"
 #define KEY_IP_ADDRESS 			"ip"
 #define KEY_PLATFORM			"platform"
+#define KEY_TIME				"device_time"
+#define KEY_ALIVE_TIME			"alive_time"
 
 class DeviceInfo {
 public:
@@ -22,6 +24,7 @@ public:
 	Json::Value GetJsonValue();
 	bool LoadFromProperty(); //load info from system
 	bool LoadFromString(std::string info);
+	Json::Value GetOTAJsonValue();
 
 	/*getter method*/
 	std::string GetDeviceId();
@@ -32,10 +35,16 @@ public:
 	std::string GetMacAddress();
 //	std::string GetIpAddress();
 	std::string GetPlatform();
+	std::string GetTime();
+	std::string GetAliveTime();
 
 	void Log();
 
 private:
+	std::string getIp() ;
+	int getTime();
+	int getAliveTime();
+
 	std::string m_szDeviceId;
 	std::string m_szProductName;
 	std::string m_szManufacturer;
@@ -44,9 +53,12 @@ private:
 	std::string m_szMacAddress;
 //	std::string m_szIpAddress;
 	std::string m_szPlatform;
+	std::string m_szTime;
+	std::string m_szAliveTime;
 
 	PropertyManager m_PropertyManager;
 	Json::Value m_jsonInfo;
+	Json::Value m_otaJsonInfo;
 };
 
 #endif

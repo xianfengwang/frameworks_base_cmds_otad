@@ -15,6 +15,7 @@
 #include "message/OtaMessage.h"
 #include "message/SystemMessage.h"
 #include "message/IMessage.h"
+#include "dm/DeviceManageClient.h"
 
 #include <pthread.h>
 #include <sstream>
@@ -45,9 +46,11 @@
 #define ABORT					true
 #define LAUNCH_CHECKER			true
 #define LAUNCH_SOCKET			true
+#define LAUNCH_DM_CLIENT		true
 
 using namespace std;
 
+void * dm_upload_thread(void *argv);
 void * check_thread(void *argv);
 RequireResult * requireUpdatePackage();
 DownloadTask * createDownloadTask(RequireResult *rr);
@@ -68,6 +71,7 @@ void * sock_server_thread(void *argv);
 void fake_sock_client();
 
 void test();
+int dm_check_tiem = 0;
 
 MutexQueue<IMessage> *g_MessageQueue;
 
@@ -127,7 +131,17 @@ int main() {
 		}
 	}
 
-	//5.looper
+	//5.dm_client
+	if (LAUNCH_DM_CLIENT) {
+		pthread_t dmId;
+		err = pthread_create(&dmId, NULL, dm_upload_thread, NULL);
+		if (err != 0) {
+			LOGE("launch \"dm_upload_thread\" thread error, Abort OTAD.");
+			return -1;
+		}
+	}
+
+	//6.looper
 	while (true) {
 		sleep(10);
 	}
@@ -191,6 +205,42 @@ bool handshakeWithHome(int fd) {
 		return false;
 	}
 	return true;
+}
+
+void * dm_upload_thread(void *argv) {
+	LOGD("dm_upload_thread");
+	while (true) {
+
+		struct stat file_info;
+		FILE *fd;
+		curl_off_t fsize;
+
+		fd = fopen("/data/test.json", "a+");
+		if (fd != NULL && fstat(fileno(fd), &file_info) == 0) {
+			fclose(fd);
+			fsize = (curl_off_t) file_info.st_size;
+			LOGD("dm_client log file size: %" CURL_FORMAT_CURL_OFF_T " bytes.\n", fsize);
+			LOGD("dm_client check time: %d", dm_check_tiem);
+			if (fsize >= 20480 || dm_check_tiem >= 10) {
+				DeviceManageClient *dmc = new DeviceManageClient();
+				dmc->write_json();
+				dmc->post_file("http://10.0.0.201:9002/log/upload",
+						"/data/test.json");
+				dm_check_tiem = 0;
+				delete dmc;
+			} else {
+				LOGD("file size < 20kb or time < 3min");
+			}
+		} else {
+			LOGE("open JSON file failed");
+		}
+
+		LOGD("sleep 5 SEC");
+		sleep(5);
+		dm_check_tiem += 5;
+	}
+
+	return NULL;
 }
 
 void * sock_server_thread(void *argv) {

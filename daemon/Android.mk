@@ -20,7 +20,8 @@ LOCAL_SRC_FILES:= src/main.cpp \
 	src/message/OtaMessage.cpp \
 	src/fs/mtdutils.c \
 	src/message/Message.cpp \
-	src/message/SystemMessage.cpp
+	src/message/SystemMessage.cpp \
+	src/dm/DeviceManageClient.cpp
 
 LOCAL_C_INCLUDES += \
 	frameworks/base/cmds/otad/daemon/include \
